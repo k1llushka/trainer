@@ -16,8 +16,8 @@ VTB Finance Tracker — веб‑приложение на Django для упр�
 ## Установка и запуск
 1. Клонируйте репозиторий и перейдите в каталог проекта:
    ```bash
-   git clone https://github.com/k1llushka/vtb-finance-tracker1.git
-   cd vtb-finance-tracker1
+   git clone https://github.com/k1llushka/trainer.git
+   cd trainer
    ```
 2. Создайте и активируйте виртуальное окружение (рекомендуется):
    ```bash

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h3>Удалить категорию?</h3>
+
+    <p>Вы действительно хотите удалить категорию <strong>{{ object.name }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger">Удалить</button>
+        <a href="{% url 'transactions:category_list' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+<!-- templates/dashboard/index.html -->
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Добро пожаловать, {{ user.first_name|default:user.username }}!
+            </h1>
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                Это главная страница вашего финансового трекера.
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-circle display-4 text-primary"></i>
+                            <h5 class="card-title mt-3">Профиль</h5>
+                            <p class="card-text">Управление личными данными</p>
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-primary">
+                                Перейти
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-wallet2 display-4 text-success"></i>
+                            <h5 class="card-title mt-3">Транзакции</h5>
+                            <p class="card-text">Учет доходов и расходов</p>
+                            <a href="#" class="btn btn-success">
+                                Перейти
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-graph-up display-4 text-info"></i>
+                            <h5 class="card-title mt-3">Аналитика</h5>
+                            <p class="card-text">Статистика и отчеты</p>
+                            <a href="#" class="btn btn-info">
+                                Перейти
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

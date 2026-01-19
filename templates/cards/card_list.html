@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои карты{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-credit-card-2-front me-2"></i>
+                    Мои карты
+                </h2>
+                <a href="{% url 'cards:card_create' %}" class="vtb-btn">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Добавить карту
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    {% if object_list %}
+        <div class="row g-4">
+            {% for card in object_list %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm hover-shadow">
+                        <div class="card-body">
+                            <!-- Тип карты и иконка -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">{{ card.card_number_masked }}</h5>
+                                    <small class="text-muted">
+                                        {% if card.card_type == 'debit' %}
+                                            <i class="bi bi-wallet2"></i> Дебетовая
+                                        {% elif card.card_type == 'credit' %}
+                                            <i class="bi bi-credit-card"></i> Кредитная
+                                        {% else %}
+                                            <i class="bi bi-piggy-bank"></i> Накопительная
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'cards:card_update' card.pk %}">
+                                                <i class="bi bi-pencil me-2"></i>Редактировать
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="{% url 'cards:card_delete' card.pk %}">
+                                                <i class="bi bi-trash me-2"></i>Удалить
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Баланс -->
+                            <div class="mb-3">
+                                <div class="text-muted small mb-1">Баланс</div>
+                                <h3 class="mb-0">
+                                    {{ card.balance|floatformat:2 }} ₽
+                                </h3>
+                            </div>
+
+                            <!-- Дополнительная информация -->
+                            <div class="row g-2 text-muted small">
+                                <div class="col-6">
+                                    <i class="bi bi-bank me-1"></i>
+                                    {{ card.bank_name }}
+                                </div>
+                                <div class="col-6 text-end">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    {{ card.expiry_date|date:"m/y" }}
+                                </div>
+                            </div>
+
+                            <!-- Статус активности -->
+                            <div class="mt-3">
+                                {% if card.is_active %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>Активна
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-x-circle me-1"></i>Неактивна
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-credit-card-2-front display-1 text-muted mb-3"></i>
+            <h4 class="text-muted mb-3">У вас пока нет карт</h4>
+            <p class="text-muted mb-4">Добавьте свою первую карту для отслеживания операций</p>
+            <a href="{% url 'cards:card_create' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>
+                Добавить карту
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-title {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+}
+</style>
+{% endblock %}

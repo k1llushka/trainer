@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Дашборд - ВТБ Финансовый Трекер{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Заголовок -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">
+                <i class="bi bi-speedometer2 text-primary me-2"></i>
+                Финансовый дашборд
+            </h1>
+            <p class="text-muted">Добро пожаловать, {{ user.first_name|default:user.username }}!</p>
+        </div>
+
+        <div class="col-md-4 text-end">
+            <a href="{% url 'transactions:add' %}{% if selected_card %}?card={{ selected_card.id }}{% endif %}"
+               class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>
+                Добавить транзакцию
+            </a>
+        </div>
+    </div>
+
+    <div class="col-12 mb-3">
+        <select id="cardFilter" class="form-select">
+            <option value="all">Все карты</option>
+            {% for card in cards %}
+                <option value="{{ card.id }}" {% if selected_card and card.id == selected_card.id %}selected{% endif %}>
+                    {{ card.bank_name }} — **** {{ card.card_number|slice:"-4:" }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>
+                        {{ period_title }}
+                    </h5>
+
+                    <select id="period-select" class="form-select form-select-sm" style="width: auto;"
+                            onchange="changePeriod(this.value)">
+                        <option value="week"  {% if period == 'week' %}selected{% endif %}>Неделя</option>
+                        <option value="month" {% if period == 'month' %}selected{% endif %}>Месяц</option>
+                        <option value="year"  {% if period == 'year' %}selected{% endif %}>Год</option>
+                    </select>
+                </div>
+
+                <div class="card-body">
+                    <div class="row g-3">
+
+                        <!-- Доходы -->
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="bi bi-arrow-up-circle me-2"></i> Доходы</h6>
+                                    <h3 class="mb-0">{{ income|floatformat:2 }} ₽</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Расходы -->
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="bi bi-arrow-down-circle me-2"></i> Расходы</h6>
+                                    <h3 class="mb-0">{{ expense|floatformat:2 }} ₽</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Баланс -->
+                        <div class="col-md-3">
+                            <div class="card {% if balance >= 0 %}bg-primary{% else %}bg-warning{% endif %} text-white h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="bi bi-wallet2 me-2"></i> Баланс</h6>
+                                    <h3 class="mb-0">{{ balance|floatformat:2 }} ₽</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Количество транзакций -->
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="bi bi-receipt me-2"></i> Транзакций</h6>
+                                    <h3 class="mb-0">{{ recent_transactions.count }}</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up-arrow me-2"></i>
+                        Доходы и расходы
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container-line">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart me-2"></i>
+                        Расходы по категориям
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="categoryChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+    </div>
+
+    <!-- Последние транзакции -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i> Последние транзакции</h5>
+                    <a href="{% url 'transactions:list' %}" class="btn btn-sm btn-outline-primary">Все</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                {% for t in recent_transactions %}
+                                <tr>
+                                    <td style="width:40px;">
+                                        <i class="{{ t.category.icon|default:'bi-wallet2' }} fs-4"
+                                           style="color: {{ t.category.color|default:'#6c757d' }}"></i>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ t.category.name|default:'Без категории' }}</div>
+                                        <small class="text-muted">{{ t.date|date:"d.m.Y" }}</small>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                            {% if t.type == 'income' %}+{% else %}-{% endif %}
+                                            {{ t.amount|floatformat:2 }} ₽
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="3" class="text-center py-4 text-muted">Нет транзакций</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI рекомендации -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightbulb me-2 text-warning"></i>
+                        Рекомендации
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    {% if ai_recommendations %}
+                        <ul class="list-group">
+                            {% for rec in ai_recommendations %}
+                                <li class="list-group-item d-flex align-items-start">
+                                    <i class="bi bi-stars text-warning me-2 mt-1"></i>
+                                    <span>{{ rec }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="p-3 text-muted text-center">
+                            Рекомендации недоступны
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const chartLabels = {{ chart_labels|safe }};
+    const chartValues = {{ chart_values|safe }};
+    const chartColors = {{ chart_colors|safe }};
+
+function changePeriod(period) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("period", period);
+    window.location.href = url.toString();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.VTBTracker) {
+        window.VTBTracker.AI.loadRecommendations();
+        window.VTBTracker.AI.loadInsights();
+        // ===== Линейный график доходы/расходы =====
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: 'Расходы',
+                    data: {{ chart_values|safe }},
+                    borderWidth: 2,
+                    fill: false,
+                    borderColor: 'red',
+                    tension: 0.3
+                }]
+            },
+        });
+    }
+});
+
+document.getElementById("cardFilter").addEventListener("change", function () {
+    const url = new URL(window.location.href);
+    const value = this.value;
+
+    if (value === "all") {
+        url.searchParams.delete("card");
+    } else {
+        url.searchParams.set("card", value);
+    }
+
+    window.location.href = url.toString();
+});
+
+</script>
+
+{% endblock %}

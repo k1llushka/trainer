@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+
+    <h2 class="fw-bold text-primary mb-4">Категории</h2>
+
+    <!-- Кнопка -->
+    <div class="mb-3">
+        <a href="{% url 'transactions:category_add' %}" class="btn btn-primary">
+            + Добавить категорию
+        </a>
+    </div>
+
+    {% if not categories %}
+        <div class="alert alert-info">
+            Категории пока не созданы.
+        </div>
+    {% else %}
+
+        <div class="row g-3">
+
+            {% for c in categories %}
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div style="width:14px; height:14px; border-radius:50%; background:{{ c.color }}"></div>
+                            <h5 class="card-title mb-0">{{ c.name }}</h5>
+                        </div>
+
+                        <p class="text-muted mb-1">
+                            Тип:
+                            {% if c.type == "income" %}
+                                <span class="text-success">Доход</span>
+                            {% else %}
+                                <span class="text-danger">Расход</span>
+                            {% endif %}
+                        </p>
+
+                        {% if c.description %}
+                            <p class="small mb-2">{{ c.description }}</p>
+                        {% endif %}
+
+                        <td>
+                            <a href="{% url 'transactions:category_edit' c.id %}"
+                               class="btn btn-sm btn-outline-secondary">
+                               Редактировать
+                            </a>
+
+                            <a href="{% url 'transactions:category_delete' c.id %}"
+                               class="btn btn-sm btn-outline-danger">
+                               Удалить
+                            </a>
+                        </td>
+
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+{% endblock %}

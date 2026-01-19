@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+
+    <!-- Профильная карточка -->
+    <div class="glass-card profile-card">
+
+        <div class="profile-top">
+            <div class="avatar-box">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" class="avatar-img" alt="avatar">
+                {% else %}
+                    <i class="bi bi-person-circle avatar-icon"></i>
+                {% endif %}
+            </div>
+
+            <div class="profile-main-info">
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p class="username">@{{ user.username }}</p>
+
+                <div class="profile-details">
+                    <div><span>Email:</span> {{ user.email|default:"Не указан" }}</div>
+                    <div><span>Телефон:</span> {{ user.phone_number|default:"Не указан" }}</div>
+                    <div><span>Регистрация:</span> {{ user.date_joined|date:"d.m.Y" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Финансовые настройки -->
+    <div class="glass-card finance-card">
+        <h3>⚙ Финансовые настройки</h3>
+
+        <div class="finance-row">
+            <span>Месячный бюджет:</span>
+            <strong>{{ profile.monthly_budget }} {{ profile.get_currency_display }}</strong>
+        </div>
+
+        <div class="finance-row">
+            <span>Валюта:</span>
+            <strong>{{ profile.get_currency_display }}</strong>
+        </div>
+
+        <div class="finance-row">
+            <span>Уведомления:</span>
+            {% if profile.notification_enabled %}
+                <span class="badge-status green">Включены</span>
+            {% else %}
+                <span class="badge-status gray">Выключены</span>
+            {% endif %}
+        </div>
+
+        <div class="finance-row">
+            <span>Email уведомления:</span>
+            {% if profile.email_notifications %}
+                <span class="badge-status green">Включены</span>
+            {% else %}
+                <span class="badge-status gray">Выключены</span>
+            {% endif %}
+        </div>
+
+        <div class="finance-row">
+            <span>Рекомендации:</span>
+            {% if profile.ai_recommendations_enabled %}
+                <span class="badge-status green">Включены</span>
+            {% else %}
+                <span class="badge-status gray">Выключены</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="profile-buttons">
+        <a href="{% url 'accounts:profile_edit' %}" class="btn-vtb">
+            Редактировать
+        </a>
+
+        <a href="{% url 'accounts:password_change' %}" class="btn-yellow">
+            Сменить пароль
+        </a>
+
+        <a href="{% url 'accounts:logout' %}" class="btn-red">
+            Выход
+        </a>
+    </div>
+
+</div>
+{% endblock %}

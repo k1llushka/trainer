@@ -1,0 +1,671 @@
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --dark-color: #343a40;
+}
+
+/** Фон на весь сайт — ПК и мобильный **/
+body {
+    background-image: url("/static/images/DesktopВТБфон.png");
+    background-size: cover;          /* красиво растягивается */
+    background-position: center;     /* центр */
+    background-repeat: no-repeat;    /* не повторяется */
+    background-attachment: fixed;    /* эффект параллакса на ПК */
+    background-color: #000;          /* fallback на случай ошибки */
+}
+
+/** Оптимизация для мобильных устройств */
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll;   /* избегает багов на iOS */
+        background-size: cover;
+    }
+}
+
+
+/* Навигация */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Карточки */
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+}
+
+/* Кнопки */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Таблицы */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+
+/* Формы */
+.form-control, .form-select {
+    border-radius: 20px;
+    border: 1px solid #dee2e6;
+    padding: 0.6rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card, .alert {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Статистические карточки */
+.card.bg-success,
+.card.bg-danger,
+.card.bg-primary,
+.card.bg-info,
+.card.bg-warning {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Графики */
+canvas {
+    max-height: 400px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    h1.display-5 {
+        font-size: 1.8rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Loader */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+/* Иконки категорий */
+.category-icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+/* Прогресс бары для бюджетов */
+.progress {
+    height: 8px;
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+/* Отступ под фиксированную шапку */
+body {
+    padding-top: 80px;
+    margin: 0;
+
+    /* Фон сайта */
+    background-image: url("/static/images/DesktopВТБфон.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    font-family: "Inter", sans-serif;
+}
+
+/* Эффект стекла */
+.glass-nav {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.65);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 12px 0 !important;
+    height: 78px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Навбар ссылки */
+.navbar .nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #0d6efd;
+}
+
+/* Mobile fix — фон не тормозит */
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll;
+        background-size: cover;
+    }
+}
+
+#categoryChart {
+    max-width: 340px;
+    margin: 0 auto;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-container {
+    position: center;
+    width: 100%;
+    height: 310px;
+    padding: center;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chart-container-line {
+    position: relative;
+    width: 100%;
+    height: 340px;
+}
+
+/* Центрируем меню */
+.navbar-nav.mx-auto {
+    gap: 28px;            /* расстояние между пунктами */
+    font-size: 17px;
+    font-weight: 500;
+}
+
+/* Логотип ближе к левому краю */
+.navbar-brand img {
+    margin-right: 6px !important;
+    transform: translateY(1px);
+}
+
+/* Красивый hover эффект */
+.nav-link {
+    position: relative;
+    transition: 0.25s ease;
+}
+
+.nav-link:hover {
+    color: #0a58ca;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0a58ca;
+    transform: scaleX(0);
+    transition: 0.3s;
+    border-radius: 4px;
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* Центрируем меню в мобильной версии */
+@media (max-width: 992px) {
+    .navbar-nav.mx-auto {
+        margin-left: 0 !important;
+        text-align: center;
+        gap: 18px;
+    }
+}
+
+/* Красивая VTB-кнопка */
+.vtb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 30px;
+    gap: 10px;
+
+    background: linear-gradient(90deg, #0033FF 20.19%, #0600AB 72.6%, #00003D 100%);
+    border-radius: 20px;
+
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+/* Hover эффект */
+.vtb-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(20, 0, 80, 0.35);
+    opacity: 0.95;
+}
+
+/* Нажатие */
+.vtb-btn:active {
+    transform: scale(0.97);
+}
+
+/* Фон раскрытого мобильного меню */
+.navbar-collapse {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 0 0 14px 14px;
+}
+
+
+/* Чтобы пункты меню не были прозрачными */
+.navbar-nav .nav-link {
+    color: #222 !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #000 !important;
+}
+
+/* Новый стиль для всех кнопок .btn-primary */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 26px;      /* адаптивная ширина */
+    gap: 10px;
+
+    background: linear-gradient(90deg, #0033FF 0%, #0600AB 65%, #00003D 100%);
+    border-radius: 20px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    white-space: nowrap;
+    border: none;
+
+    transition: 0.25s ease;
+}
+
+/* Hover-эффект */
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Основной контейнер */
+.profile-wrapper {
+    max-width: 850px;
+    margin: 140px auto 60px;
+    padding: 0 15px;
+}
+
+/* Стеклянная карточка */
+.glass-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+}
+
+/* Верхняя часть */
+.profile-top {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+/* Аватар */
+.avatar-box {
+    min-width: 120px;
+    min-height: 120px;
+}
+.avatar-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #1A50FF;
+}
+.avatar-icon {
+    font-size: 120px;
+    color: #adb5bd;
+}
+
+/* Имя + инфо */
+.profile-main-info h2 {
+    margin: 0;
+    font-weight: 700;
+}
+.username {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.profile-details div {
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+.profile-details span {
+    font-weight: 600;
+}
+
+/* Финансы */
+.finance-card h3 {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+.finance-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ececec;
+    padding: 12px 0;
+    font-size: 16px;
+}
+
+/* Статусы */
+.badge-status {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.badge-status.green {
+    background: #d4edda;
+    color: #2e7d32;
+}
+.badge-status.gray {
+    background: #e2e3e5;
+    color: #555;
+}
+
+/* Кнопки */
+.profile-buttons {
+    text-align: center;
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Синяя фирменная */
+.btn-vtb {
+    padding: 12px 26px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #0033FF 0%, #0600AB 60%, #00003D 100%);
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    text-decoration: none;
+}
+
+/* Желтая */
+.btn-yellow {
+    padding: 12px 26px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #FFE36A, #FFBE00);
+    color: #000 !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Красная */
+.btn-red {
+    padding: 12px 26px;
+    border-radius: 30px;
+    background: #e63946;
+    color: white !important;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+@font-face {
+    font-family: "TT Travels";
+    src: url("{% static 'fonts/TTTravels-Regular.woff2' %}") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "TT Travels";
+    src: url("{% static 'fonts/TTTravels-Bold.woff2' %}") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: "TT Travels", sans-serif;
+}
+
+/* ——— Общий контейнер ——— */
+.login-page {
+    min-height: 85vh;
+    flex-direction: column;
+}
+
+/* ——— Карточка ——— */
+.card-login {
+    width: 420px;
+    padding: 45px 50px;
+    border-radius: 28px;
+    background: #fff;
+    box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.08),
+        0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ——— Верхняя иконка ——— */
+.login-icon {
+    font-size: 4.4rem;
+    color: #0033ff;
+    margin-bottom: 10px;
+}
+
+/* ——— Тексты ——— */
+.login-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #001a4d;
+    margin-bottom: 5px;
+}
+
+.login-subtitle {
+    font-size: 15px;
+    color: #808080;
+}
+
+/* ——— Поля ввода ——— */
+.card-login .form-control {
+    height: 50px !important;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 14px;
+    border: 1px solid #d7dbe7;
+    transition: 0.2s;
+    background: #fafbff;
+}
+
+.card-login .form-control:focus {
+    border-color: #0033ff;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 74, 255, 0.15);
+}
+
+/* Лейблы */
+.input-label {
+    font-weight: 600;
+    color: #001a4d;
+    margin-bottom: 6px;
+}
+
+/* ——— Кнопка ——— */
+.btn-vtb {
+    height: 54px;
+    border-radius: 20px;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #0033FF 0%, #0600AB 60%, #00003D 100%);
+    transition: 0.2s;
+}
+
+.btn-vtb:hover {
+    opacity: 0.90;
+    transform: translateY(-2px);
+}
+
+/* ——— Нижние преимущества ——— */
+.login-features {
+    margin-top: 35px;
+    display: flex;
+    gap: 40px;
+}
+
+.feature-icon {
+    font-size: 1.9rem;
+    color: #0033ff;
+}
+
+.feature-text {
+    font-size: 13px;
+    color: #7a7a7a;
+    margin-top: 5px;
+}
+
+/* ——— Ссылка регистрации ——— */
+.register-link {
+    font-weight: 600;
+    color: #0033ff !important;
+}
+
+
+.chat-box {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    height: 60vh;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.message {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    line-height: 1.4;
+    font-size: 15px;
+}
+
+.user-msg {
+    background: linear-gradient(90deg, #0033FF, #00003D);
+    color: white;
+    align-self: flex-end;
+}
+
+.bot-msg {
+    background: white;
+    color: #000;
+    align-self: flex-start;
+}
+
+.chat-input-box {
+    display: flex;
+    margin-top: 15px;
+}
+

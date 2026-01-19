@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Транзакции - ВТБ Финансовый Трекер{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Все транзакции</h1>
+            <p class="text-muted mb-0">Фильтруйте и управляйте своими операциями</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'transactions:add' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Добавить
+            </a>
+            <a href="{% url 'transactions:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-speedometer2 me-1"></i> Дашборд
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-sm-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted">Доходы</div>
+                    <div class="h4 mb-0 text-success">{{ total_income|floatformat:2 }} ₽</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted">Расходы</div>
+                    <div class="h4 mb-0 text-danger">{{ total_expense|floatformat:2 }} ₽</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted">Баланс</div>
+                    <div class="h4 mb-0">
+                        {% with balance=total_income|default:0|add:-total_expense|default:0 %}
+                            <span class="{% if balance >= 0 %}text-primary{% else %}text-warning{% endif %}">
+                                {{ balance|floatformat:2 }} ₽
+                            </span>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted">Всего транзакций</div>
+                    <div class="h4 mb-0">{{ page_obj.paginator.count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Фильтр</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-2">
+                    <label class="form-label">Тип</label>
+                    {{ filter_form.type }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Категория</label>
+                    {{ filter_form.category }}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Дата с</label>
+                    {{ filter_form.date_from }}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Дата по</label>
+                    {{ filter_form.date_to }}
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">
+                        <i class="bi bi-search"></i> Применить
+                    </button>
+                    <a href="{% url 'transactions:list' %}" class="btn btn-outline-secondary" title="Сбросить фильтр">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Список транзакций</h5>
+            <small class="text-muted">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</small>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Дата</th>
+                        <th>Категория</th>
+                        <th>Тип</th>
+                        <th class="text-end">Сумма</th>
+                        <th>Карта</th>
+                        <th>Описание</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        {% for transaction in page_obj.object_list %}
+                        <tr>
+                            <td>{{ transaction.date|date:'d.m.Y' }}</td>
+                            <td>
+                                <i class="{{ transaction.category.icon|default:'bi-wallet2' }} me-1"
+                                   style="color: {{ transaction.category.color|default:'#6c757d' }}"></i>
+                                {{ transaction.category.name|default:'Без категории' }}
+                            </td>
+
+                            <td>
+                                <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if transaction.type == 'income' %}Доход{% else %}Расход{% endif %}
+                                </span>
+                            </td>
+
+                            <td class="text-end fw-semibold">{{ transaction.amount|floatformat:2 }} ₽</td>
+
+                            <td>
+                                {% if transaction.card %}
+                                    {{ transaction.card.bank_name }} — **** {{ transaction.card.card_number|slice:"-4:" }}
+                                {% else %}
+                                    Наличные / Без карты
+                                {% endif %}
+                            </td>
+
+
+                            <td class="text-muted">{{ transaction.description|default:'—' }}</td>
+
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'transactions:edit' transaction.pk %}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'transactions:delete' transaction.pk %}" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                Транзакции не найдены
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+        {% if is_paginated %}
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <div class="text-muted">Показано {{ page_obj.start_index }}-{{ page_obj.end_index }} из {{ page_obj.paginator.count }}</div>
+            <nav aria-label="Навигация по страницам">
+                <ul class="pagination mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Предыдущая</span></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Следующая</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

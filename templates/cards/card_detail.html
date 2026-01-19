@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Карта {{ object.card_number_masked }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'cards:card_list' %}" class="btn btn-outline-secondary mb-3">
+                <i class="bi bi-arrow-left me-2"></i>Назад к картам
+            </a>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-credit-card-2-front me-2"></i>
+                    {{ object.card_number_masked }}
+                </h2>
+                <div>
+                    <a href="{% url 'cards:card_update' object.pk %}" class="btn btn-primary">
+                        <i class="bi bi-pencil me-2"></i>Редактировать
+                    </a>
+                    <a href="{% url 'cards:card_delete' object.pk %}" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Удалить
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Информация о карте</h5>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Баланс</small>
+                        <h3 class="mb-0">{{ object.balance|floatformat:2 }} ₽</h3>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Банк</small>
+                        <strong>{{ object.bank_name }}</strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Тип карты</small>
+                        <strong>
+                            {% if object.card_type == 'debit' %}
+                                Дебетовая
+                            {% elif object.card_type == 'credit' %}
+                                Кредитная
+                            {% else %}
+                                Накопительная
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Срок действия</small>
+                        <strong>{{ object.expiry_date|date:"m/Y" }}</strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Статус</small>
+                        {% if object.is_active %}
+                            <span class="badge bg-success">Активна</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Неактивна</span>
+                        {% endif %}
+                    </div>
+
+                    {% if object.description %}
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Описание</small>
+                            <p class="mb-0">{{ object.description }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Последние операции</h5>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        История операций будет отображаться здесь
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Редактировать профиль{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Назад к профилю
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Левая колонка - Основная информация -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">
+                        <i class="bi bi-person-circle me-2"></i>
+                        Основная информация
+                    </h4>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Аватар -->
+                        <div class="mb-4 text-center">
+                            {% if user_form.instance.avatar %}
+                                <img src="{{ user_form.instance.avatar.url }}" 
+                                     alt="Avatar" 
+                                     class="rounded-circle mb-3" 
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 150px; height: 150px; font-size: 3rem;">
+                                    {{ user.first_name.0|default:user.username.0|upper }}
+                                </div>
+                            {% endif %}
+                            <div>
+                                {{ user_form.avatar|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ user_form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ user_form.last_name|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ user_form.username|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ user_form.email|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        {{ user_form.phone_number|as_crispy_field }}
+                        {{ user_form.address|as_crispy_field }}
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">
+                            <i class="bi bi-shield-lock me-2"></i>
+                            Документы
+                        </h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ user_form.passport_number|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ user_form.inn|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Сохранить изменения
+                            </button>
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-2"></i>
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка - Настройки профиля -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-gear me-2"></i>
+                        Настройки профиля
+                    </h5>
+
+                    <form method="post" action="{% url 'accounts:profile_settings' %}">
+                    {% csrf_token %}
+
+                    {{ profile_form.monthly_budget|as_crispy_field }}
+                    {{ profile_form.currency|as_crispy_field }}
+
+                    <hr class="my-3">
+
+                    <h6 class="mb-3">Уведомления</h6>
+                    {{ profile_form.notification_enabled|as_crispy_field }}
+                    {{ profile_form.email_notifications|as_crispy_field }}
+
+                    <hr class="my-3">
+
+                    <h6 class="mb-3">Рекомендации</h6>
+                    {{ profile_form.ai_recommendations_enabled|as_crispy_field }}
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Сохранить настройки
+                    </button>
+                </form>
+
+                </div>
+            </div>
+
+            <!-- Изменение пароля -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-key me-2"></i>
+                        Безопасность
+                    </h5>
+                    <p class="text-muted small mb-3">
+                        Регулярно меняйте пароль для защиты вашей учетной записи
+                    </p>
+                    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        Изменить пароль
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+.btn-primary {
+    background-color: #0066cc;
+    border-color: #0066cc;
+}
+
+.btn-primary:hover {
+    background-color: #0052a3;
+    border-color: #0052a3;
+}
+</style>
+{% endblock %}

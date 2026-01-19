@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты - Профиль{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="sidebar">
+                <div class="text-center mb-4">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" class="rounded-circle" width="100" height="100" alt="Avatar">
+                    {% else %}
+                        <div class="mx-auto" style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--vtb-blue), var(--vtb-purple)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; font-weight: bold;">
+                            {{ user.first_name.0|default:user.username.0|upper }}
+                        </div>
+                    {% endif %}
+                    <h5 class="mt-3 mb-0">{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted small">{{ user.email }}</p>
+                </div>
+
+                <nav>
+                    <a href="{% url 'accounts:profile' %}" class="sidebar-link">
+                        <i class="bi bi-person"></i> Ваши данные
+                    </a>
+                    <a href="{% url 'accounts:contacts' %}" class="sidebar-link active">
+                        <i class="bi bi-telephone"></i> Контакты
+                    </a>
+                    <a href="{% url 'accounts:documents' %}" class="sidebar-link">
+                        <i class="bi bi-file-earmark-text"></i> Документы
+                    </a>
+                    <a href="{% url 'accounts:profile_edit' %}" class="sidebar-link">
+                        <i class="bi bi-gear"></i> Настройки
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-telephone"></i> Контакты</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Телефон -->
+                    <div class="mb-4 p-3" style="background: #f8f9fa; border-radius: 15px;">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-3" style="width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-telephone-fill" style="font-size: 1.5rem; color: var(--vtb-blue);"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>Телефон</strong>
+                                <p class="mb-0 text-muted small">Для уведомлений для банка</p>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Изменить</a>
+                        </div>
+                        <div class="ms-5 ps-3">
+                            <h5 class="mb-0">{{ user.phone_number|default:"+7 906 ***-**-56" }}</h5>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4 p-3" style="background: #f8f9fa; border-radius: 15px;">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-3" style="width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-envelope-fill" style="font-size: 1.5rem; color: var(--vtb-green);"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>Электронная почта</strong>
+                                <p class="mb-0 text-muted small">Для писем о счетах и услугах</p>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-success">Добавить</a>
+                        </div>
+                        <div class="ms-5 ps-3">
+                            <h5 class="mb-0">{{ user.email|default:"Не указано" }}</h5>
+                        </div>
+                    </div>
+
+                    <!-- Адрес -->
+                    <div class="mb-4 p-3" style="background: #f8f9fa; border-radius: 15px;">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-3" style="width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-house-fill" style="font-size: 1.5rem; color: var(--vtb-orange);"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>Адрес проживания</strong>
+                                <p class="mb-0 text-muted small">Можно изменить в отделении банка</p>
+                            </div>
+                        </div>
+                        <div class="ms-5 ps-3">
+                            <p class="mb-0">{{ user.address|default:"Татарстан Респ., г. Альметьевск, ул. И*, д. *, кв. 34" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block title %}Вход - ВТБ Финансовый Трекер{% endblock %}
+
+{% block content %}
+
+<div class="login-page d-flex align-items-center justify-content-center">
+    <div class="card-login shadow-lg">
+
+        <!-- Верхняя иконка -->
+        <div class="text-center mb-4">
+            <div class="login-icon">
+                <i class="bi bi-bank2"></i>
+            </div>
+            <h2 class="login-title">Добро пожаловать</h2>
+            <p class="login-subtitle">Войдите в свой аккаунт</p>
+        </div>
+
+        <!-- Форма -->
+        <form method="post" action="{% url 'accounts:login' %}">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="form-group mb-3">
+                <label class="form-label fw-semibold d-block mb-2">
+                    <i class="bi bi-person me-1"></i> Имя пользователя
+                </label>
+
+                {% render_field form.username class="form-control login-input" %}
+
+                {% if form.username.errors %}
+                    <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group mb-4">
+                <label class="form-label fw-semibold d-block mb-2">
+                    <i class="bi bi-lock me-1"></i> Пароль
+                </label>
+
+                {% render_field form.password class="form-control login-input" %}
+
+                {% if form.password.errors %}
+                    <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="rememberMe">
+                <label for="rememberMe" class="form-check-label">Запомнить меня</label>
+            </div>
+
+            <button type="submit" class="btn btn-vtb w-100 mb-3">
+                <i class="bi bi-box-arrow-in-right"></i> Войти
+            </button>
+
+            <p class="text-center mt-3">
+                Нет аккаунта?
+                <a href="{% url 'accounts:register' %}" class="register-link">Зарегистрироваться</a>
+            </p>
+        </form>
+
+    </div>
+
+    <!-- Нижние преимущества -->
+    <div class="login-features text-center">
+        <div>
+            <i class="bi bi-shield-check feature-icon"></i>
+            <p class="feature-text">Безопасно</p>
+        </div>
+        <div>
+            <i class="bi bi-graph-up-arrow feature-icon"></i>
+            <p class="feature-text">Аналитика</p>
+        </div>
+        <div>
+            <i class="bi bi-robot feature-icon"></i>
+            <p class="feature-text">AI-помощник</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
